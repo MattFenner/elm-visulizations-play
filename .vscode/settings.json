@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "elm",
+        "hex",
+        "murmur",
+        "rtfeldman",
+        "skinney"
+    ],
+    "elm.analyseEnabled": true,
+    "elm.formatCommand": ".\\\\node_modules\\\\.bin\\\\elm-format",
+    "editor.formatOnType": true,
+    "editor.tabSize": 4
+}
