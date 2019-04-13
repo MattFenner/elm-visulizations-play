@@ -1,9 +1,9 @@
 module Main exposing (Flags, Model, Msg, init, main, subscriptions, update, view)
 
 import Browser
-import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (..)
-import Visualization exposing (..)
+import Html.Styled exposing (div)
+-- import Html.Styled.Attributes exposing (..)
+import Visualization exposing (visualization)
 
 type alias Flags =
     ()
@@ -23,15 +23,12 @@ main =
 -- Model
 
 
-type alias Model =
-    { content : String
-    }
+type alias Model = ()
 
 
 init : Flags -> ( Model, Cmd Msg )
-init flags =
-    ( { content = "hello world"
-      }
+init _ =
+    ( ()
     , Cmd.none
     )
 
@@ -45,7 +42,7 @@ type alias Msg =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update _ model =
     ( model, Cmd.none )
 
 
@@ -54,7 +51,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -63,7 +60,7 @@ subscriptions model =
 
 
 view : Model -> Browser.Document Msg
-view model =
+view _ =
     { title = "Elm Svg Test"
     , body =
         [ Html.Styled.toUnstyled

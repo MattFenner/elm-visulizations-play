@@ -1,21 +1,33 @@
 module Visualization exposing (visualization)
 
-import Svg.Styled exposing (..)
-import Svg.Styled.Attributes exposing (..)
+import Css exposing (Style, animationName, animationDuration, sec, transform, translate2, num, px, property)
+import Css.Animations as Anim exposing (transform, keyframes)
+import Html.Styled exposing (Html)
+import Svg.Styled exposing (Svg, g, polygon, svg)
+import Svg.Styled.Attributes exposing (fill, height, points, viewBox, width, css, transform)
+
 
 -- TODO: generate boxes procedurally
+
+
 allBoxes : List Box
-allBoxes = 
+allBoxes =
     let
-        xs = (List.range -5 5)
-        ys = (List.range -5 5)
+        xs =
+            List.range -5 5
+
+        ys =
+            List.range -5 5
     in
-        makeCombinations xs ys (\x y -> makeBox x y)
+    makeCombinations xs ys (\x y -> makeBox x y)
+
 
 makeCombinations : List Int -> List Int -> (Int -> Int -> thing) -> List thing
 makeCombinations xs ys f =
-    List.concatMap (\x -> List.map (\y -> (f x y)) ys) xs
+    List.concatMap (\x -> List.map (\y -> f x y) ys) xs
 
+
+visualization : Html msg
 visualization =
     svg
         [ width "100%"
@@ -24,47 +36,78 @@ visualization =
         ]
         (boxesToSvg (sortBoxesByZOrder allBoxes))
 
-type alias Box = 
+
+type alias Box =
     { gridX : Int
     , gridY : Int
     }
 
+
 makeBox : Int -> Int -> Box
 makeBox gX gY =
-    {
-        gridX = gX,
-        gridY = gY
+    { gridX = gX
+    , gridY = gY
     }
+
+
 
 -- draw box at grid location
 -- TODO: add Z dimension
+
+
 boxToSvg : Box -> Svg.Styled.Svg msg
 boxToSvg box =
+    g
+        [ animatePosition box
+        ]
+        [ boxLeft
+        , boxRight
+        , boxTop
+        ]
+
+animatePosition : Box -> Svg.Styled.Attribute msg
+animatePosition box = 
     let
-        xLoc = (((cos (degrees 30)) + boxGap) * toFloat box.gridX) - (((cos (degrees 30)) + boxGap) * toFloat box.gridY)
-        yLoc = (((sin (degrees 30)) + boxGap) * toFloat box.gridX) + (((sin (degrees 30)) + boxGap) * toFloat box.gridY)
-        -- TODO: handle y
+        xLoc =
+            ((cos (degrees 30) + boxGap) * toFloat box.gridX) - ((cos (degrees 30) + boxGap) * toFloat box.gridY)
+
+        yLoc =
+            ((sin (degrees 30) + boxGap) * toFloat box.gridX) + ((sin (degrees 30) + boxGap) * toFloat box.gridY)
+        
+        animation =
+            keyframes 
+                [ (0, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, -50px)") ] )
+                , (50, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat yLoc ++ "px)") ] )
+                , (100, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, 50px)") ] )
+                ]
     in
-        g
-            [ transform ("translate(" ++ (String.fromFloat xLoc) ++ "," ++ (String.fromFloat yLoc) ++ ")")
-            ]
-            [ boxLeft
-            , boxRight
-            , boxTop
+        css 
+            [ animationName animation 
+            , property "animation-duration" "30s"
+            , property "animation-iteration-count" "infinite"
+            -- , property "animation-timing-function" "ease-in-out"
             ]
 
 boxesToSvg : List Box -> List (Svg.Styled.Svg msg)
-boxesToSvg boxes = 
+boxesToSvg boxes =
     List.map boxToSvg boxes
+
 
 sortBoxesByZOrder : List Box -> List Box
 sortBoxesByZOrder boxes =
     List.sortBy (\b -> b.gridX + b.gridY) boxes
 
+
+
 -- box parts
 
-boxGap = 0.1
 
+boxGap : Float
+boxGap =
+    0.1
+
+
+boxTop : Svg msg
 boxTop =
     polygon
         [ fill "#619554"
@@ -78,6 +121,7 @@ boxTop =
         []
 
 
+boxLeft : Svg msg
 boxLeft =
     polygon
         [ fill "#725239"
@@ -91,6 +135,7 @@ boxLeft =
         []
 
 
+boxRight : Svg msg
 boxRight =
     polygon
         [ fill "#3D2C1F"
