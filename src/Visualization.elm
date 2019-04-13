@@ -76,16 +76,16 @@ animatePosition box =
         
         animation =
             keyframes 
-                [ (0, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, -50px)") ] )
+                [ (0, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat (yLoc-20) ++ "px)") ] )
                 , (50, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat yLoc ++ "px)") ] )
-                , (100, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, 50px)") ] )
+                , (100, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat (yLoc+20) ++ "px)") ] )
                 ]
     in
         css 
             [ animationName animation 
-            , property "animation-duration" "30s"
+            , property "animation-duration" "10s"
             , property "animation-iteration-count" "infinite"
-            -- , property "animation-timing-function" "ease-in-out"
+            , property "animation-timing-function" "ease-in-out"
             ]
 
 boxesToSvg : List Box -> List (Svg.Styled.Svg msg)

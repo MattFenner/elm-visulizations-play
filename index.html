@@ -6922,7 +6922,7 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(
 						rtfeldman$elm_css$Css$Animations$property,
 						'transform',
-						'translate(' + (elm$core$String$fromFloat(xLoc) + 'px, -50px)'))
+						'translate(' + (elm$core$String$fromFloat(xLoc) + ('px, ' + (elm$core$String$fromFloat(yLoc - 20) + 'px)'))))
 					])),
 				_Utils_Tuple2(
 				50,
@@ -6940,15 +6940,16 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(
 						rtfeldman$elm_css$Css$Animations$property,
 						'transform',
-						'translate(' + (elm$core$String$fromFloat(xLoc) + 'px, 50px)'))
+						'translate(' + (elm$core$String$fromFloat(xLoc) + ('px, ' + (elm$core$String$fromFloat(yLoc + 20) + 'px)'))))
 					]))
 			]));
 	return rtfeldman$elm_css$Svg$Styled$Attributes$css(
 		_List_fromArray(
 			[
 				rtfeldman$elm_css$Css$animationName(animation),
-				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '30s'),
-				A2(rtfeldman$elm_css$Css$property, 'animation-iteration-count', 'infinite')
+				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '10s'),
+				A2(rtfeldman$elm_css$Css$property, 'animation-iteration-count', 'infinite'),
+				A2(rtfeldman$elm_css$Css$property, 'animation-timing-function', 'ease-in-out')
 			]));
 };
 var author$project$Visualization$bottomFront = _Utils_Tuple2(0, 1);
