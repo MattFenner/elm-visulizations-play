@@ -4846,9 +4846,12 @@ var author$project$Main$update = F2(
 	function (_n0, model) {
 		return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 	});
-var author$project$Visualization$makeBox = F2(
-	function (gX, gY) {
-		return {gridX: gX, gridY: gY};
+var author$project$Visualization$makeBox = function (loc) {
+	return {gridX: loc.x, gridY: loc.y};
+};
+var author$project$Visualization$makeGridLoc = F2(
+	function (x, y) {
+		return {x: x, y: y};
 	});
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
@@ -4935,15 +4938,15 @@ var elm$core$List$concatMap = F2(
 		return elm$core$List$concat(
 			A2(elm$core$List$map, f, list));
 	});
-var author$project$Visualization$makeCombinations = F3(
-	function (xs, ys, f) {
+var author$project$Visualization$makeCombinations = F2(
+	function (xs, ys) {
 		return A2(
 			elm$core$List$concatMap,
 			function (x) {
 				return A2(
 					elm$core$List$map,
 					function (y) {
-						return A2(f, x, y);
+						return A2(author$project$Visualization$makeGridLoc, x, y);
 					},
 					ys);
 			},
@@ -4955,23 +4958,23 @@ var elm$core$Basics$negate = function (n) {
 var author$project$Visualization$allBoxes = function () {
 	var ys = A2(elm$core$List$range, -5, 5);
 	var xs = A2(elm$core$List$range, -5, 5);
-	return A3(
-		author$project$Visualization$makeCombinations,
-		xs,
-		ys,
-		F2(
-			function (x, y) {
-				return A2(author$project$Visualization$makeBox, x, y);
-			}));
+	return A2(
+		elm$core$List$map,
+		author$project$Visualization$makeBox,
+		A2(author$project$Visualization$makeCombinations, xs, ys));
 }();
 var author$project$Visualization$boxGap = 0.1;
+var elm$core$String$fromFloat = _String_fromNumber;
+var author$project$Visualization$makeTransformVal = F2(
+	function (x, y) {
+		return 'translate(' + (elm$core$String$fromFloat(x) + ('px, ' + (elm$core$String$fromFloat(y) + 'px)')));
+	});
 var elm$core$Basics$cos = _Basics_cos;
 var elm$core$Basics$pi = _Basics_pi;
 var elm$core$Basics$degrees = function (angleInDegrees) {
 	return (angleInDegrees * elm$core$Basics$pi) / 180;
 };
 var elm$core$Basics$sin = _Basics_sin;
-var elm$core$String$fromFloat = _String_fromNumber;
 var rtfeldman$elm_css$Css$Preprocess$AppendProperty = function (a) {
 	return {$: 'AppendProperty', a: a};
 };
@@ -6922,16 +6925,25 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(
 						rtfeldman$elm_css$Css$Animations$property,
 						'transform',
-						'translate(' + (elm$core$String$fromFloat(xLoc) + ('px, ' + (elm$core$String$fromFloat(yLoc - 20) + 'px)'))))
+						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc - 20))
 					])),
 				_Utils_Tuple2(
-				50,
+				40,
 				_List_fromArray(
 					[
 						A2(
 						rtfeldman$elm_css$Css$Animations$property,
 						'transform',
-						'translate(' + (elm$core$String$fromFloat(xLoc) + ('px, ' + (elm$core$String$fromFloat(yLoc) + 'px)'))))
+						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc))
+					])),
+				_Utils_Tuple2(
+				60,
+				_List_fromArray(
+					[
+						A2(
+						rtfeldman$elm_css$Css$Animations$property,
+						'transform',
+						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc))
 					])),
 				_Utils_Tuple2(
 				100,
@@ -6940,14 +6952,14 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(
 						rtfeldman$elm_css$Css$Animations$property,
 						'transform',
-						'translate(' + (elm$core$String$fromFloat(xLoc) + ('px, ' + (elm$core$String$fromFloat(yLoc + 20) + 'px)'))))
+						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc + 20))
 					]))
 			]));
 	return rtfeldman$elm_css$Svg$Styled$Attributes$css(
 		_List_fromArray(
 			[
 				rtfeldman$elm_css$Css$animationName(animation),
-				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '10s'),
+				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '5s'),
 				A2(rtfeldman$elm_css$Css$property, 'animation-iteration-count', 'infinite'),
 				A2(rtfeldman$elm_css$Css$property, 'animation-timing-function', 'ease-in-out')
 			]));

@@ -13,18 +13,23 @@ import Svg.Styled.Attributes exposing (fill, height, points, viewBox, width, css
 allBoxes : List Box
 allBoxes =
     let
-        xs =
-            List.range -5 5
-
-        ys =
-            List.range -5 5
+        xs = List.range -5 5
+        ys = List.range -5 5
     in
-    makeCombinations xs ys (\x y -> makeBox x y)
+    List.map makeBox (makeCombinations xs ys)
 
+type alias GridLoc =
+    { 
+        x : Int,
+        y : Int
+    }
 
-makeCombinations : List Int -> List Int -> (Int -> Int -> thing) -> List thing
-makeCombinations xs ys f =
-    List.concatMap (\x -> List.map (\y -> f x y) ys) xs
+makeGridLoc : Int -> Int -> GridLoc
+makeGridLoc x y = { x = x, y = y }
+
+makeCombinations : List Int -> List Int -> List GridLoc
+makeCombinations xs ys =
+    List.concatMap (\x -> List.map (\y -> makeGridLoc x y) ys) xs
 
 
 visualization : Html msg
@@ -43,10 +48,10 @@ type alias Box =
     }
 
 
-makeBox : Int -> Int -> Box
-makeBox gX gY =
-    { gridX = gX
-    , gridY = gY
+makeBox : GridLoc -> Box
+makeBox loc =
+    { gridX = loc.x
+    , gridY = loc.y
     }
 
 
@@ -76,17 +81,22 @@ animatePosition box =
         
         animation =
             keyframes 
-                [ (0, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat (yLoc-20) ++ "px)") ] )
-                , (50, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat yLoc ++ "px)") ] )
-                , (100, [ Anim.property "transform" ("translate(" ++ String.fromFloat xLoc ++ "px, " ++ String.fromFloat (yLoc+20) ++ "px)") ] )
+                [ (0, [ Anim.property "transform" (makeTransformVal xLoc (yLoc - 20)) ] )
+                , (40, [ Anim.property "transform" (makeTransformVal xLoc yLoc) ] )
+                , (60, [ Anim.property "transform" (makeTransformVal xLoc yLoc) ] )
+                , (100, [ Anim.property "transform" (makeTransformVal xLoc (yLoc + 20)) ] )
                 ]
     in
         css 
             [ animationName animation 
-            , property "animation-duration" "10s"
+            , property "animation-duration" "5s"
             , property "animation-iteration-count" "infinite"
             , property "animation-timing-function" "ease-in-out"
             ]
+
+makeTransformVal : Float -> Float -> String
+makeTransformVal x y =
+    "translate(" ++ String.fromFloat x ++ "px, " ++ String.fromFloat y ++ "px)"
 
 boxesToSvg : List Box -> List (Svg.Styled.Svg msg)
 boxesToSvg boxes =
