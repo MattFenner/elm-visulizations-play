@@ -1,2 +1,6 @@
+# packages
 node_modules
 elm-stuff
+
+# make output
+index.html
