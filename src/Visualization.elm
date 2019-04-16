@@ -5,10 +5,9 @@ import Css.Animations as Anim exposing (transform, keyframes)
 import Html.Styled exposing (Html)
 import Svg.Styled exposing (Svg, g, polygon, svg)
 import Svg.Styled.Attributes exposing (fill, height, points, viewBox, width, css, transform)
+import Random
 
-
--- TODO: generate boxes procedurally
-
+-- abstract model --
 
 allBoxes : List Box
 allBoxes =
@@ -32,16 +31,6 @@ makeCombinations xs ys =
     List.concatMap (\x -> List.map (\y -> makeGridLoc x y) ys) xs
 
 
-visualization : Html msg
-visualization =
-    svg
-        [ width "100%"
-        , height "800"
-        , viewBox "-10 -10 20 20"
-        ]
-        (boxesToSvg (sortBoxesByZOrder allBoxes))
-
-
 type alias Box =
     { gridX : Int
     , gridY : Int
@@ -55,10 +44,20 @@ makeBox loc =
     }
 
 
+-- Rendering --
 
--- draw box at grid location
--- TODO: add Z dimension
+visualization : Html msg
+visualization =
+    svg
+        [ width "100%"
+        , height "800"
+        , viewBox "-10 -10 20 20"
+        ]
+        (boxesToSvg (sortBoxesByZOrder allBoxes))
 
+boxesToSvg : List Box -> List (Svg.Styled.Svg msg)
+boxesToSvg boxes =
+    List.map boxToSvg boxes
 
 boxToSvg : Box -> Svg.Styled.Svg msg
 boxToSvg box =
@@ -82,26 +81,27 @@ animatePosition box =
         animation =
             keyframes 
                 [ (0, [ Anim.property "transform" (makeTransformVal xLoc (yLoc - 20)) ] )
-                , (40, [ Anim.property "transform" (makeTransformVal xLoc yLoc) ] )
+                , (30, [ Anim.property "transform" (makeTransformVal xLoc yLoc) ] )
                 , (60, [ Anim.property "transform" (makeTransformVal xLoc yLoc) ] )
+                , (90, [ Anim.property "transform" (makeTransformVal xLoc (yLoc + 20)) ] )
                 , (100, [ Anim.property "transform" (makeTransformVal xLoc (yLoc + 20)) ] )
                 ]
     in
         css 
             [ animationName animation 
-            , property "animation-duration" "5s"
+            , property "animation-duration" "6s"
             , property "animation-iteration-count" "infinite"
             , property "animation-timing-function" "ease-in-out"
+            , property "animation-delay" (String.fromInt (getRandomInt 0 1500 (box.gridX + box.gridY * 333)) ++ "ms") 
             ]
+
+getRandomInt : Int -> Int -> Int -> Int
+getRandomInt min max seed =
+    (Tuple.first (Random.step (Random.int min max) (Random.initialSeed seed)))
 
 makeTransformVal : Float -> Float -> String
 makeTransformVal x y =
     "translate(" ++ String.fromFloat x ++ "px, " ++ String.fromFloat y ++ "px)"
-
-boxesToSvg : List Box -> List (Svg.Styled.Svg msg)
-boxesToSvg boxes =
-    List.map boxToSvg boxes
-
 
 sortBoxesByZOrder : List Box -> List Box
 sortBoxesByZOrder boxes =

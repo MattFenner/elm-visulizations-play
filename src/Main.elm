@@ -3,6 +3,7 @@ module Main exposing (Flags, Model, Msg, init, main, subscriptions, update, view
 import Browser
 import Html.Styled exposing (div)
 -- import Html.Styled.Attributes exposing (..)
+import Random
 import Visualization exposing (visualization)
 
 type alias Flags =
@@ -37,8 +38,7 @@ init _ =
 -- Update
 
 
-type alias Msg =
-    ()
+type alias Msg = ()
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

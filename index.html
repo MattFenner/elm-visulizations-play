@@ -2324,6 +2324,43 @@ function _Platform_mergeExportsDebug(moduleName, obj, exports)
 
 
 
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
+
 
 // HELPERS
 
@@ -3882,43 +3919,6 @@ function _VirtualDom_dekey(keyedNode)
 
 
 
-var _Bitwise_and = F2(function(a, b)
-{
-	return a & b;
-});
-
-var _Bitwise_or = F2(function(a, b)
-{
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-
-
-
 
 // ELEMENT
 
@@ -4964,6 +4964,82 @@ var author$project$Visualization$allBoxes = function () {
 		A2(author$project$Visualization$makeCombinations, xs, ys));
 }();
 var author$project$Visualization$boxGap = 0.1;
+var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var elm$random$Random$next = function (_n0) {
+	var state0 = _n0.a;
+	var incr = _n0.b;
+	return A2(elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var elm$random$Random$initialSeed = function (x) {
+	var _n0 = elm$random$Random$next(
+		A2(elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _n0.a;
+	var incr = _n0.b;
+	var state2 = (state1 + x) >>> 0;
+	return elm$random$Random$next(
+		A2(elm$random$Random$Seed, state2, incr));
+};
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
+var elm$core$Bitwise$and = _Bitwise_and;
+var elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var elm$core$Bitwise$xor = _Bitwise_xor;
+var elm$random$Random$peel = function (_n0) {
+	var state = _n0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var elm$random$Random$int = F2(
+	function (a, b) {
+		return elm$random$Random$Generator(
+			function (seed0) {
+				var _n0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _n0.a;
+				var hi = _n0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & elm$random$Random$peel(seed0)) >>> 0) + lo,
+						elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = elm$random$Random$peel(seed);
+							var seedN = elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var elm$random$Random$step = F2(
+	function (_n0, seed) {
+		var generator = _n0.a;
+		return generator(seed);
+	});
+var author$project$Visualization$getRandomInt = F3(
+	function (min, max, seed) {
+		return A2(
+			elm$random$Random$step,
+			A2(elm$random$Random$int, min, max),
+			elm$random$Random$initialSeed(seed)).a;
+	});
 var elm$core$String$fromFloat = _String_fromNumber;
 var author$project$Visualization$makeTransformVal = F2(
 	function (x, y) {
@@ -5029,9 +5105,6 @@ var rtfeldman$elm_css$Css$Animations$keyframes = function (tuples) {
 		value: rtfeldman$elm_css$Css$Internal$compileKeyframes(tuples)
 	};
 };
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
 var rtfeldman$elm_css$Css$Internal$Property = function (a) {
 	return {$: 'Property', a: a};
 };
@@ -5071,9 +5144,7 @@ var Skinney$murmur3$Murmur3$HashData = F4(
 	});
 var Skinney$murmur3$Murmur3$c1 = 3432918353;
 var Skinney$murmur3$Murmur3$c2 = 461845907;
-var elm$core$Bitwise$and = _Bitwise_and;
 var elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var Skinney$murmur3$Murmur3$multiplyBy = F2(
 	function (b, a) {
 		return ((a & 65535) * b) + ((((a >>> 16) * b) & 65535) << 16);
@@ -5084,7 +5155,6 @@ var Skinney$murmur3$Murmur3$rotlBy = F2(
 		return (a << b) | (a >>> (32 - b));
 	});
 var elm$core$Basics$neq = _Utils_notEqual;
-var elm$core$Bitwise$xor = _Bitwise_xor;
 var Skinney$murmur3$Murmur3$finalize = function (data) {
 	var acc = data.hash ? (data.seed ^ A2(
 		Skinney$murmur3$Murmur3$multiplyBy,
@@ -6928,7 +6998,7 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc - 20))
 					])),
 				_Utils_Tuple2(
-				40,
+				30,
 				_List_fromArray(
 					[
 						A2(
@@ -6946,6 +7016,15 @@ var author$project$Visualization$animatePosition = function (box) {
 						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc))
 					])),
 				_Utils_Tuple2(
+				90,
+				_List_fromArray(
+					[
+						A2(
+						rtfeldman$elm_css$Css$Animations$property,
+						'transform',
+						A2(author$project$Visualization$makeTransformVal, xLoc, yLoc + 20))
+					])),
+				_Utils_Tuple2(
 				100,
 				_List_fromArray(
 					[
@@ -6959,9 +7038,14 @@ var author$project$Visualization$animatePosition = function (box) {
 		_List_fromArray(
 			[
 				rtfeldman$elm_css$Css$animationName(animation),
-				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '5s'),
+				A2(rtfeldman$elm_css$Css$property, 'animation-duration', '6s'),
 				A2(rtfeldman$elm_css$Css$property, 'animation-iteration-count', 'infinite'),
-				A2(rtfeldman$elm_css$Css$property, 'animation-timing-function', 'ease-in-out')
+				A2(rtfeldman$elm_css$Css$property, 'animation-timing-function', 'ease-in-out'),
+				A2(
+				rtfeldman$elm_css$Css$property,
+				'animation-delay',
+				elm$core$String$fromInt(
+					A3(author$project$Visualization$getRandomInt, 0, 1500, box.gridX + (box.gridY * 333))) + 'ms')
 			]));
 };
 var author$project$Visualization$bottomFront = _Utils_Tuple2(0, 1);
