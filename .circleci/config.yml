@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: codesimple/elm
+      - image: codesimple/elm:0.19
 
     steps:
       - checkout
