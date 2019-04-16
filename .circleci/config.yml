@@ -9,4 +9,4 @@ jobs:
 
       - run:
           name: build
-          command: elm make
+          command: elm make src/Main.elm
